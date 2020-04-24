@@ -22,21 +22,21 @@ function statement (invoice, plays) {
         result += ` ${play.name}: ${format(thisAmount / 100)} (${performance.audience} seats)\n`;
     }
 
-    function handleTragedyAmount(thisAmount, performance) {
-        thisAmount = TRAGEDY_BASE_AMOUNT;
+    function getTragedyAmount(performance) {
+        let result = TRAGEDY_BASE_AMOUNT;
         if (performance.audience > 30) {
-            thisAmount += 1000 * (performance.audience - 30);
+            result += 1000 * (performance.audience - 30);
         }
-        return thisAmount;
+        return result;
     }
 
-    function handleComedyAmount(thisAmount, performance) {
-        thisAmount = COMEDY_BASE_AMOUNT;
+    function getComedyAmount(performance) {
+        let result = COMEDY_BASE_AMOUNT;
         if (performance.audience > 20) {
-            thisAmount += 10000 + 500 * (performance.audience - 20);
+            result += 10000 + 500 * (performance.audience - 20);
         }
-        thisAmount += 300 * performance.audience;
-        return thisAmount;
+        result += 300 * performance.audience;
+        return result;
     }
 
     for (let performance of invoice.performances) {
@@ -44,10 +44,10 @@ function statement (invoice, plays) {
         let thisAmount = 0;
         switch (play.type) {
             case "tragedy":
-                thisAmount = handleTragedyAmount(thisAmount, performance);
+                thisAmount = getTragedyAmount(performance);
                 break;
             case "comedy":
-                thisAmount = handleComedyAmount(thisAmount, performance);
+                thisAmount = getComedyAmount(performance);
                 break;
             default:
                 throw new Error(`unknown type: ${play.type}`);
