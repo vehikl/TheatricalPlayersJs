@@ -1,40 +1,79 @@
 
-function statement (invoice, plays) {
-    let totalAmount = 0;
-    let volumeCredits = 0;
-    let result = `Statement for ${invoice.customer}\n`;
-    const format = new Intl.NumberFormat("en-US",
-        { style: "currency", currency: "USD",
-            minimumFractionDigits: 2 }).format;
+const format = new Intl.NumberFormat("en-US",{
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
+}).format;
 
-    for (let perf of invoice.performances) {
-        const play = plays[perf.playID];
-        let thisAmount = 0;
-        switch (play.type) {
-            case "tragedy":
-                thisAmount = 40000;
-                if (perf.audience > 30) {
-                    thisAmount += 1000 * (perf.audience - 30);
-                }
-                break;
-            case "comedy":
-                thisAmount = 30000;
-                if (perf.audience > 20) {
-                    thisAmount += 10000 + 500 * (perf.audience - 20);
-                }
-                thisAmount += 300 * perf.audience;
-                break;
-            default:
-                throw new Error(`unknown type: ${play.type}`);
-        }
-        // add volume credits
-        volumeCredits += Math.max(perf.audience - 30, 0);
-        // add extra credit for every ten comedy attendees
-        if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
-        // print line for this order
-        result += ` ${play.name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
-        totalAmount += thisAmount;
+class InvoiceFactory {
+  static toInvoice(performance, play) {
+    switch(play.type) {
+    case 'tragedy':
+      return new TragedyPerformanceInvoice(performance, play);
+    case 'comedy':
+      return new ComedyPerformanceInvoice(performance, play);
+    default:
+      throw new Error(`unknown type: ${play.type}`);
     }
+  }
+}
+
+class PerformanceInvoice {
+  constructor(performance, play) {
+    this.performance = performance;
+    this.play = play;
+  }
+
+  audienceAmount() { throw new Error('not implemented'); }
+  volumeCredits() { throw new Error('not implemented'); }
+  recieptLine() {
+    return ` ${this.play.name}: ${format(this.audienceAmount()/100)} (${this.performance.audience} seats)\n`;
+  }
+}
+
+class TragedyPerformanceInvoice extends PerformanceInvoice {
+  audienceAmount() {
+    let amount = 40000;
+    if (this.performance.audience > 30) {
+      amount += 1000 * (this.performance.audience - 30);
+    }
+    return amount;
+  }
+
+  volumeCredits() {
+    return Math.max(this.performance.audience - 30, 0);
+  }
+}
+
+class ComedyPerformanceInvoice extends PerformanceInvoice {
+  audienceAmount() {
+    let amount = 30000;
+    if (this.performance.audience > 20) {
+      amount += 10000 + 500 * (this.performance.audience - 20);
+    }
+    amount += 300 * this.performance.audience;
+
+    return amount;
+  }
+
+  volumeCredits() {
+    let volumeCredits = Math.max(this.performance.audience - 30, 0);
+    volumeCredits += Math.floor(this.performance.audience / 5);
+    return volumeCredits;
+  }
+}
+
+
+function statement (invoice, plays) {
+    const generated = invoice.performances.map(performance => InvoiceFactory.toInvoice(performance, plays[performance.playID]));
+    const totalAmount = generated.reduce((acc, i) => acc + i.audienceAmount(), 0);
+    const volumeCredits = generated.reduce((acc, i) => acc + i.volumeCredits(), 0);
+
+    let result = `Statement for ${invoice.customer}\n`;
+    generated.forEach(i => {
+      result += i.recieptLine();
+    });
+
     result += `Amount owed is ${format(totalAmount/100)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
     return result;
