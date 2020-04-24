@@ -1,5 +1,8 @@
 
 function statement (invoice, plays) {
+    const TRAGEDY_BASE_AMOUNT = 40000;
+    const COMEDY_BASE_AMOUNT = 30000;
+
     let totalAmount = 0;
     let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`;
@@ -24,13 +27,13 @@ function statement (invoice, plays) {
         let thisAmount = 0;
         switch (play.type) {
             case "tragedy":
-                thisAmount = 40000;
+                thisAmount = TRAGEDY_BASE_AMOUNT;
                 if (performance.audience > 30) {
                     thisAmount += 1000 * (performance.audience - 30);
                 }
                 break;
             case "comedy":
-                thisAmount = 30000;
+                thisAmount = COMEDY_BASE_AMOUNT;
                 if (performance.audience > 20) {
                     thisAmount += 10000 + 500 * (performance.audience - 20);
                 }
