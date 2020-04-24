@@ -39,19 +39,20 @@ function statement (invoice, plays) {
         return result;
     }
 
-    for (let performance of invoice.performances) {
-        const play = plays[performance.playID];
-        let thisAmount = 0;
+    function handlePerformanceAmounts(play, performance) {
         switch (play.type) {
             case "tragedy":
-                thisAmount = getTragedyAmount(performance);
-                break;
+                return getTragedyAmount(performance);
             case "comedy":
-                thisAmount = getComedyAmount(performance);
-                break;
+                return getComedyAmount(performance);
             default:
                 throw new Error(`unknown type: ${play.type}`);
         }
+    }
+
+    for (let performance of invoice.performances) {
+        const play = plays[performance.playID];
+        let thisAmount = handlePerformanceAmounts(play, performance);
 
         addVolumeCredits(performance);
         addExtraCreditPerTenComedyAttendees(play, performance);
