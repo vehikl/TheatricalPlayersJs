@@ -25,6 +25,10 @@ class TragedyPlay extends Play {
         }
         return thisAmountA;
     }
+
+    getVolumeCredits(perf) {
+        return Math.max(perf.audience - 30, 0);
+    }
 }
 
 class ComedyPlay extends Play {
@@ -36,6 +40,10 @@ class ComedyPlay extends Play {
         thisAmount += 300 * audience;
         return thisAmount;
     }
+
+    getVolumeCredits(perf) {
+        return Math.max(perf.audience - 30, 0) + Math.floor(perf.audience / 5);
+    }
 }
 
 function statement (invoice, plays) {
@@ -44,11 +52,7 @@ function statement (invoice, plays) {
             minimumFractionDigits: 2 }).format;
 
     function getVolumeCredits(play, perf) {
-        let result = 0;
-        result += Math.max(perf.audience - 30, 0);
-        if ("comedy" === play.type) result += Math.floor(perf.audience / 5);
-
-        return result;
+        return PlayFactory.makePlay(play.type).getVolumeCredits(perf);
     }
 
     function getLineItem(play, thisAmount, perf) {
