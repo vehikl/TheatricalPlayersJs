@@ -55,10 +55,6 @@ function statement (invoice, plays) {
         return ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
     }
 
-    function getAmountForPlay(play, perf) {
-        return PlayFactory.makePlay(play.type).getAmount(perf.audience);
-    }
-
     function getTotalVolumeCredits() {
         let volumeCredits = 0;
         for (let perf of invoice.performances) {
@@ -72,7 +68,7 @@ function statement (invoice, plays) {
         let totalAmount = 0;
         for (let perf of invoice.performances) {
             const play = plays[perf.playID];
-            let thisAmount = getAmountForPlay(play, perf);
+            let thisAmount = PlayFactory.makePlay(play.type).getAmount(perf.audience);
             totalAmount += thisAmount;
         }
         return totalAmount;
@@ -82,7 +78,7 @@ function statement (invoice, plays) {
         let lineItems = "";
         for (let perf of invoice.performances) {
             const play = plays[perf.playID];
-            let thisAmount = getAmountForPlay(play, perf);
+            let thisAmount = PlayFactory.makePlay(play.type).getAmount(perf.audience);
             lineItems += getLineItem(play, thisAmount, perf);
         }
         return lineItems;
