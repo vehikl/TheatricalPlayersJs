@@ -59,20 +59,21 @@ class ComedyPlay extends Play {
 }
 
 function statement (invoice, plays) {
+    const performances = invoice.performances;
     function getTotalVolumeCredits() {
-        return invoice.performances.reduce((totalCredits, performance) => {
+        return performances.reduce((totalCredits, performance) => {
             return totalCredits + PlayFactory.makePlay(plays[performance.playID], performance).getVolumeCredits();
         }, 0);
     }
 
     function getTotalAmount() {
-        return invoice.performances.reduce((total, performance) => {
+        return performances.reduce((total, performance) => {
             return total + PlayFactory.makePlay(plays[performance.playID], performance).getAmount();
         }, 0);
     }
 
     function getLineItems() {
-        return invoice.performances.reduce((lineItems, performance) => {
+        return performances.reduce((lineItems, performance) => {
             return lineItems + PlayFactory.makePlay(plays[performance.playID], performance).getLineItem();
         }, '');
     }
