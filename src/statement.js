@@ -6,23 +6,29 @@ class Play {
     getAmount(perf) {
         switch (this.type) {
             case "tragedy":
-                return this.getTragedyAmount(perf);
+                let tragedyPlay = new TragedyPlay(this.type);
+                return tragedyPlay.getAmount(perf);
             case "comedy":
-                return this.getComedyAmount(perf);
+                let comedyPlay = new ComedyPlay(this.type);
+                return comedyPlay.getAmount(perf);
             default:
                 throw new Error(`unknown type: ${this.type}`);
         }
     }
+}
 
-    getTragedyAmount(perf) {
+class TragedyPlay extends Play {
+    getAmount(perf) {
         let thisAmountA = 40000;
         if (perf.audience > 30) {
             thisAmountA += 1000 * (perf.audience - 30);
         }
         return thisAmountA;
     }
+}
 
-    getComedyAmount(perf) {
+class ComedyPlay extends Play {
+    getAmount(perf) {
         let thisAmount = 30000;
         if (perf.audience > 20) {
             thisAmount += 10000 + 500 * (perf.audience - 20);
