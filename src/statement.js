@@ -7,16 +7,12 @@ function statement (invoice, plays) {
         { style: "currency", currency: "USD",
             minimumFractionDigits: 2 }).format;
 
-    function addVolumeCredits(perf) {
+    function addVolumeCredits(play, perf) {
         volumeCredits += Math.max(perf.audience - 30, 0);
-    }
-
-    function addExtraCreditForComedy(play, perf) {
         if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
     }
 
     function printLineItem(play, thisAmount, perf) {
-// print line for this order
         result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
     }
 
@@ -40,8 +36,7 @@ function statement (invoice, plays) {
             default:
                 throw new Error(`unknown type: ${play.type}`);
         }
-        addVolumeCredits(perf);
-        addExtraCreditForComedy(play, perf);
+        addVolumeCredits(play, perf);
         printLineItem(play, thisAmount, perf);
         totalAmount += thisAmount;
     }
