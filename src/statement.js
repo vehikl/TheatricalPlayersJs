@@ -3,12 +3,12 @@ const format = new Intl.NumberFormat("en-US",
       minimumFractionDigits: 2 }).format;
 
 class PlayFactory {
-    static makePlay (play) {
+    static makePlay (play, performance = null) {
         switch (play.type) {
             case "tragedy":
-                return new TragedyPlay(play);
+                return new TragedyPlay(play, performance);
             case "comedy":
-                return new ComedyPlay(play);
+                return new ComedyPlay(play, performance);
             default:
                 throw new Error(`unknown type: ${play.type}`);
         }
@@ -16,18 +16,20 @@ class PlayFactory {
 }
 
 class Play {
-    constructor (play) {
+    constructor (play, performance) {
         this.play = play;
+        this.performance = performance;
     }
-    getAmount (audience) {throw new Error ('not implemented')}
+    getAmount () {throw new Error ('not implemented')}
     getVolumeCredits (perf) {throw new Error ('not implemented')}
-    getLineItem (audience) {
-        return ` ${this.play.name}: ${format(this.getAmount(audience) / 100)} (${audience} seats)\n`
+    getLineItem () {
+        return ` ${this.play.name}: ${format(this.getAmount() / 100)} (${this.performance.audience} seats)\n`
     }
 }
 
 class TragedyPlay extends Play {
-    getAmount(audience) {
+    getAmount() {
+        const audience = this.performance.audience;
         let thisAmountA = 40000;
         if (audience > 30) {
             thisAmountA += 1000 * (audience - 30);
@@ -41,7 +43,8 @@ class TragedyPlay extends Play {
 }
 
 class ComedyPlay extends Play {
-    getAmount(audience) {
+    getAmount() {
+        const audience = this.performance.audience;
         let thisAmount = 30000;
         if (audience > 20) {
             thisAmount += 10000 + 500 * (audience - 20);
@@ -58,19 +61,19 @@ class ComedyPlay extends Play {
 function statement (invoice, plays) {
     function getTotalVolumeCredits() {
         return invoice.performances.reduce((totalCredits, performance) => {
-            return totalCredits + PlayFactory.makePlay(plays[performance.playID]).getVolumeCredits(performance);
+            return totalCredits + PlayFactory.makePlay(plays[performance.playID], performance).getVolumeCredits(performance);
         }, 0);
     }
 
     function getTotalAmount() {
         return invoice.performances.reduce((total, performance) => {
-            return total + PlayFactory.makePlay(plays[performance.playID]).getAmount(performance.audience);
+            return total + PlayFactory.makePlay(plays[performance.playID], performance).getAmount();
         }, 0);
     }
 
     function getLineItems() {
         return invoice.performances.reduce((lineItems, performance) => {
-            return lineItems + PlayFactory.makePlay(plays[performance.playID]).getLineItem(performance.audience);
+            return lineItems + PlayFactory.makePlay(plays[performance.playID], performance).getLineItem();
         }, '');
     }
 
