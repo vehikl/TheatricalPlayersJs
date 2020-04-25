@@ -15,6 +15,11 @@ function statement (invoice, plays) {
         if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
     }
 
+    function printLineItem(play, thisAmount, perf) {
+// print line for this order
+        result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+    }
+
     for (let perf of invoice.performances) {
         const play = plays[perf.playID];
         let thisAmount = 0;
@@ -37,8 +42,7 @@ function statement (invoice, plays) {
         }
         addVolumeCredits(perf);
         addExtraCreditForComedy(play, perf);
-        // print line for this order
-        result += ` ${play.name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
+        printLineItem(play, thisAmount, perf);
         totalAmount += thisAmount;
     }
     result += `Amount owed is ${format(totalAmount/100)}\n`;
