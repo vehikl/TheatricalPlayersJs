@@ -14,9 +14,15 @@ class PlayFactory {
 class Play {
     constructor (type) {
         this.type = type;
+        this.format = new Intl.NumberFormat("en-US",
+          { style: "currency", currency: "USD",
+              minimumFractionDigits: 2 }).format;
     }
     getAmount (audience) {throw new Error ('not implemented')}
     getVolumeCredits (perf) {throw new Error ('not implemented')}
+    getLineItem (name, audience) {
+        return ` ${name}: ${this.format(this.getAmount(audience) / 100)} (${audience} seats)\n`
+    }
 }
 
 class TragedyPlay extends Play {
@@ -61,15 +67,13 @@ function statement (invoice, plays) {
 
     function getTotalAmount() {
         return invoice.performances.reduce((total, performance) => {
-            let thisAmount = PlayFactory.makePlay(plays[performance.playID].type).getAmount(performance.audience);
-            return total + thisAmount;
+            return total + PlayFactory.makePlay(plays[performance.playID].type).getAmount(performance.audience);
         }, 0);
     }
 
     function getLineItems() {
         return invoice.performances.reduce((lineItems, performance) => {
-            let thisAmount = PlayFactory.makePlay(plays[performance.playID].type).getAmount(performance.audience);
-            return lineItems + ` ${plays[performance.playID].name}: ${format(thisAmount / 100)} (${performance.audience} seats)\n`;
+            return lineItems + PlayFactory.makePlay(plays[performance.playID].type).getLineItem(plays[performance.playID].name, performance.audience);
         }, '');
     }
 
