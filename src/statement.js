@@ -45,16 +45,24 @@ function statement (invoice, plays) {
         return volumeCredits;
     }
 
-    let totalAmount = 0;
+    function getTotalAmount() {
+        let totalAmount = 0;
+        for (let perf of invoice.performances) {
+            const play = plays[perf.playID];
+            let thisAmount = getAmountForPlay(play, perf);
+            totalAmount += thisAmount;
+        }
+        return totalAmount;
+    }
+
     let result = `Statement for ${invoice.customer}\n`;
     for (let perf of invoice.performances) {
         const play = plays[perf.playID];
         let thisAmount = getAmountForPlay(play, perf);
         result += getLineItem(play, thisAmount, perf);
-        totalAmount += thisAmount;
     }
 
-    result += `Amount owed is ${format(totalAmount/100)}\n`;
+    result += `Amount owed is ${format(getTotalAmount()/100)}\n`;
     result += `You earned ${(getTotalVolumeCredits())} credits\n`;
     return result;
 }
