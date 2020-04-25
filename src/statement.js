@@ -1,3 +1,19 @@
+function getTragedyAmount(perf) {
+    let thisAmountA = 40000;
+    if (perf.audience > 30) {
+        thisAmountA += 1000 * (perf.audience - 30);
+    }
+    return thisAmountA;
+}
+
+function getComedyAmount(perf) {
+    let thisAmount = 30000;
+    if (perf.audience > 20) {
+        thisAmount += 10000 + 500 * (perf.audience - 20);
+    }
+    thisAmount += 300 * perf.audience;
+    return thisAmount;
+}
 
 function statement (invoice, plays) {
     const format = new Intl.NumberFormat("en-US",
@@ -17,21 +33,11 @@ function statement (invoice, plays) {
     }
 
     function getAmountForPlay(play, perf) {
-        let thisAmount = 0;
         switch (play.type) {
             case "tragedy":
-                thisAmount = 40000;
-                if (perf.audience > 30) {
-                    thisAmount += 1000 * (perf.audience - 30);
-                }
-                return thisAmount;
+                return getTragedyAmount(perf);
             case "comedy":
-                thisAmount = 30000;
-                if (perf.audience > 20) {
-                    thisAmount += 10000 + 500 * (perf.audience - 20);
-                }
-                thisAmount += 300 * perf.audience;
-                return thisAmount;
+                return getComedyAmount(perf);
             default:
                 throw new Error(`unknown type: ${play.type}`);
         }
