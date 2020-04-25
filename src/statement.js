@@ -3,14 +3,14 @@ const format = new Intl.NumberFormat("en-US",
       minimumFractionDigits: 2 }).format;
 
 class PlayFactory {
-    static makePlay (type) {
-        switch (type) {
+    static makePlay (play) {
+        switch (play.type) {
             case "tragedy":
-                return new TragedyPlay(type);
+                return new TragedyPlay(play.type);
             case "comedy":
-                return new ComedyPlay(type);
+                return new ComedyPlay(play.type);
             default:
-                throw new Error(`unknown type: ${type}`);
+                throw new Error(`unknown type: ${play.type}`);
         }
     }
 }
@@ -58,19 +58,19 @@ class ComedyPlay extends Play {
 function statement (invoice, plays) {
     function getTotalVolumeCredits() {
         return invoice.performances.reduce((totalCredits, performance) => {
-            return totalCredits + PlayFactory.makePlay(plays[performance.playID].type).getVolumeCredits(performance);
+            return totalCredits + PlayFactory.makePlay(plays[performance.playID]).getVolumeCredits(performance);
         }, 0);
     }
 
     function getTotalAmount() {
         return invoice.performances.reduce((total, performance) => {
-            return total + PlayFactory.makePlay(plays[performance.playID].type).getAmount(performance.audience);
+            return total + PlayFactory.makePlay(plays[performance.playID]).getAmount(performance.audience);
         }, 0);
     }
 
     function getLineItems() {
         return invoice.performances.reduce((lineItems, performance) => {
-            return lineItems + PlayFactory.makePlay(plays[performance.playID].type).getLineItem(plays[performance.playID].name, performance.audience);
+            return lineItems + PlayFactory.makePlay(plays[performance.playID]).getLineItem(plays[performance.playID].name, performance.audience);
         }, '');
     }
 
