@@ -1,3 +1,7 @@
+const format = new Intl.NumberFormat("en-US",
+  { style: "currency", currency: "USD",
+      minimumFractionDigits: 2 }).format;
+
 class PlayFactory {
     static makePlay (type) {
         switch (type) {
@@ -14,14 +18,11 @@ class PlayFactory {
 class Play {
     constructor (type) {
         this.type = type;
-        this.format = new Intl.NumberFormat("en-US",
-          { style: "currency", currency: "USD",
-              minimumFractionDigits: 2 }).format;
     }
     getAmount (audience) {throw new Error ('not implemented')}
     getVolumeCredits (perf) {throw new Error ('not implemented')}
     getLineItem (name, audience) {
-        return ` ${name}: ${this.format(this.getAmount(audience) / 100)} (${audience} seats)\n`
+        return ` ${name}: ${format(this.getAmount(audience) / 100)} (${audience} seats)\n`
     }
 }
 
@@ -55,10 +56,6 @@ class ComedyPlay extends Play {
 }
 
 function statement (invoice, plays) {
-    const format = new Intl.NumberFormat("en-US",
-        { style: "currency", currency: "USD",
-            minimumFractionDigits: 2 }).format;
-
     function getTotalVolumeCredits() {
         return invoice.performances.reduce((totalCredits, performance) => {
             return totalCredits + PlayFactory.makePlay(plays[performance.playID].type).getVolumeCredits(performance);
