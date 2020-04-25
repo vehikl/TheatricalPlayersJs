@@ -2,12 +2,12 @@ const format = new Intl.NumberFormat("en-US",
   { style: "currency", currency: "USD",
       minimumFractionDigits: 2 }).format;
 
-class InvoiceItemFactory {
+class ItemFactory {
     constructor (plays) {
         this.plays = plays;
     }
     static with(plays) {
-        return (new InvoiceItemFactory(plays));
+        return (new ItemFactory(plays));
     }
     makeItem (performance = null) {
         const play = this.plays[performance.playID];
@@ -66,7 +66,7 @@ class ComedyItem extends Item {
 }
 
 function statement (invoice, plays) {
-    const items = invoice.performances.map(performance => InvoiceItemFactory.with(plays).makeItem(performance));
+    const items = invoice.performances.map(performance => ItemFactory.with(plays).makeItem(performance));
 
     function getTotalVolumeCredits() {
         return items.reduce((result, item) => {
