@@ -2,7 +2,7 @@ const format = new Intl.NumberFormat("en-US",
   { style: "currency", currency: "USD",
       minimumFractionDigits: 2 }).format;
 
-class PlayFactory {
+class InvoiceFactory {
     static makePlay (play, performance = null) {
         switch (play.type) {
             case "tragedy":
@@ -59,7 +59,7 @@ class ComedyPlay extends Play {
 }
 
 function statement (invoice, plays) {
-    const performances = invoice.performances.map(performance => PlayFactory.makePlay(plays[performance.playID], performance));
+    const performances = invoice.performances.map(performance => InvoiceFactory.makePlay(plays[performance.playID], performance));
 
     function getTotalVolumeCredits() {
         return performances.reduce((totalCredits, performance) => {
