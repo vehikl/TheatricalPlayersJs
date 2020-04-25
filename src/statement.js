@@ -60,8 +60,7 @@ function statement (invoice, plays) {
     }
 
     function getAmountForPlay(play, perf) {
-        let playInstance = PlayFactory.makePlay(play.type);
-        return playInstance.getAmount(perf.audience);
+        return PlayFactory.makePlay(play.type).getAmount(perf.audience);
     }
 
     function getTotalVolumeCredits() {
