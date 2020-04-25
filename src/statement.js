@@ -6,9 +6,9 @@ class PlayFactory {
     static makePlay (play) {
         switch (play.type) {
             case "tragedy":
-                return new TragedyPlay(play.type);
+                return new TragedyPlay(play);
             case "comedy":
-                return new ComedyPlay(play.type);
+                return new ComedyPlay(play);
             default:
                 throw new Error(`unknown type: ${play.type}`);
         }
@@ -16,13 +16,13 @@ class PlayFactory {
 }
 
 class Play {
-    constructor (type) {
-        this.type = type;
+    constructor (play) {
+        this.play = play;
     }
     getAmount (audience) {throw new Error ('not implemented')}
     getVolumeCredits (perf) {throw new Error ('not implemented')}
-    getLineItem (name, audience) {
-        return ` ${name}: ${format(this.getAmount(audience) / 100)} (${audience} seats)\n`
+    getLineItem (audience) {
+        return ` ${this.play.name}: ${format(this.getAmount(audience) / 100)} (${audience} seats)\n`
     }
 }
 
@@ -70,7 +70,7 @@ function statement (invoice, plays) {
 
     function getLineItems() {
         return invoice.performances.reduce((lineItems, performance) => {
-            return lineItems + PlayFactory.makePlay(plays[performance.playID]).getLineItem(plays[performance.playID].name, performance.audience);
+            return lineItems + PlayFactory.makePlay(plays[performance.playID]).getLineItem(performance.audience);
         }, '');
     }
 
