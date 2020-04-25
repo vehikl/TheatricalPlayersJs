@@ -21,7 +21,7 @@ class Play {
         this.performance = performance;
     }
     getAmount () {throw new Error ('not implemented')}
-    getVolumeCredits (perf) {throw new Error ('not implemented')}
+    getVolumeCredits () {throw new Error ('not implemented')}
     getLineItem () {
         return ` ${this.play.name}: ${format(this.getAmount() / 100)} (${this.performance.audience} seats)\n`
     }
@@ -37,8 +37,8 @@ class TragedyPlay extends Play {
         return thisAmountA;
     }
 
-    getVolumeCredits(perf) {
-        return Math.max(perf.audience - 30, 0);
+    getVolumeCredits() {
+        return Math.max(this.performance.audience - 30, 0);
     }
 }
 
@@ -53,15 +53,15 @@ class ComedyPlay extends Play {
         return thisAmount;
     }
 
-    getVolumeCredits(perf) {
-        return Math.max(perf.audience - 30, 0) + Math.floor(perf.audience / 5);
+    getVolumeCredits() {
+        return Math.max(this.performance.audience - 30, 0) + Math.floor(this.performance.audience / 5);
     }
 }
 
 function statement (invoice, plays) {
     function getTotalVolumeCredits() {
         return invoice.performances.reduce((totalCredits, performance) => {
-            return totalCredits + PlayFactory.makePlay(plays[performance.playID], performance).getVolumeCredits(performance);
+            return totalCredits + PlayFactory.makePlay(plays[performance.playID], performance).getVolumeCredits();
         }, 0);
     }
 
