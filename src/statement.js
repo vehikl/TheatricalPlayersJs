@@ -22,7 +22,7 @@ class Play {
     }
     getAmount () {throw new Error ('not implemented')}
     getVolumeCredits () {throw new Error ('not implemented')}
-    getLineItem () {
+    getLineItemText () {
         return ` ${this.play.name}: ${format(this.getAmount() / 100)} (${this.performance.audience} seats)\n`
     }
 }
@@ -75,7 +75,7 @@ function statement (invoice, plays) {
 
     function getLineItems() {
         return items.reduce((result, item) => {
-            return result + item.getLineItem();
+            return result + item.getLineItemText();
         }, '');
     }
 
