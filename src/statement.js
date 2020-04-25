@@ -3,19 +3,26 @@ const format = new Intl.NumberFormat("en-US",
       minimumFractionDigits: 2 }).format;
 
 class InvoiceItemFactory {
-    static makeItem (play, performance = null) {
+    constructor (plays) {
+        this.plays = plays;
+    }
+    static with(plays) {
+        return (new InvoiceItemFactory(plays));
+    }
+    makeItem (performance = null) {
+        const play = this.plays[performance.playID];
         switch (play.type) {
             case "tragedy":
-                return new TragedyPlay(play, performance);
+                return new TragedyItem(play, performance);
             case "comedy":
-                return new ComedyPlay(play, performance);
+                return new ComedyItem(play, performance);
             default:
                 throw new Error(`unknown type: ${play.type}`);
         }
     }
 }
 
-class Play {
+class Item {
     constructor (play, performance) {
         this.play = play;
         this.performance = performance;
@@ -27,7 +34,7 @@ class Play {
     }
 }
 
-class TragedyPlay extends Play {
+class TragedyItem extends Item {
     getAmount() {
         const audience = this.performance.audience;
         let thisAmountA = 40000;
@@ -42,7 +49,7 @@ class TragedyPlay extends Play {
     }
 }
 
-class ComedyPlay extends Play {
+class ComedyItem extends Item {
     getAmount() {
         const audience = this.performance.audience;
         let thisAmount = 30000;
@@ -59,7 +66,7 @@ class ComedyPlay extends Play {
 }
 
 function statement (invoice, plays) {
-    const items = invoice.performances.map(performance => InvoiceItemFactory.makeItem(plays[performance.playID], performance));
+    const items = invoice.performances.map(performance => InvoiceItemFactory.with(plays).makeItem(performance));
 
     function getTotalVolumeCredits() {
         return items.reduce((result, item) => {
