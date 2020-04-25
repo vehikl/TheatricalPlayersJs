@@ -55,15 +55,13 @@ function statement (invoice, plays) {
 
     function getTotalVolumeCredits() {
         return invoice.performances.reduce((totalCredits, performance) => {
-            const play = plays[performance.playID];
-            return totalCredits + PlayFactory.makePlay(play.type).getVolumeCredits(performance);
+            return totalCredits + PlayFactory.makePlay(plays[performance.playID].type).getVolumeCredits(performance);
         }, 0);
     }
 
     function getTotalAmount() {
         return invoice.performances.reduce((total, performance) => {
-            const play = plays[performance.playID];
-            let thisAmount = PlayFactory.makePlay(play.type).getAmount(performance.audience);
+            let thisAmount = PlayFactory.makePlay(plays[performance.playID].type).getAmount(performance.audience);
             return total + thisAmount;
         }, 0);
     }
