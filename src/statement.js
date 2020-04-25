@@ -15,6 +15,8 @@ class Play {
     constructor (type) {
         this.type = type;
     }
+    getAmount (audience) {throw new Error ('not implemented')}
+    getVolumeCredits (perf) {throw new Error ('not implemented')}
 }
 
 class TragedyPlay extends Play {
@@ -51,37 +53,26 @@ function statement (invoice, plays) {
         { style: "currency", currency: "USD",
             minimumFractionDigits: 2 }).format;
 
-    function getLineItem(play, thisAmount, perf) {
-        return ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
-    }
-
     function getTotalVolumeCredits() {
-        let volumeCredits = 0;
-        for (let perf of invoice.performances) {
-            const play = plays[perf.playID];
-            volumeCredits += PlayFactory.makePlay(play.type).getVolumeCredits(perf);
-        }
-        return volumeCredits;
+        return invoice.performances.reduce((totalCredits, performance) => {
+            const play = plays[performance.playID];
+            return totalCredits + PlayFactory.makePlay(play.type).getVolumeCredits(performance);
+        }, 0);
     }
 
     function getTotalAmount() {
-        let totalAmount = 0;
-        for (let perf of invoice.performances) {
-            const play = plays[perf.playID];
-            let thisAmount = PlayFactory.makePlay(play.type).getAmount(perf.audience);
-            totalAmount += thisAmount;
-        }
-        return totalAmount;
+        return invoice.performances.reduce((total, performance) => {
+            const play = plays[performance.playID];
+            let thisAmount = PlayFactory.makePlay(play.type).getAmount(performance.audience);
+            return total + thisAmount;
+        }, 0);
     }
 
     function getLineItems() {
-        let lineItems = "";
-        for (let perf of invoice.performances) {
-            const play = plays[perf.playID];
-            let thisAmount = PlayFactory.makePlay(play.type).getAmount(perf.audience);
-            lineItems += getLineItem(play, thisAmount, perf);
-        }
-        return lineItems;
+        return invoice.performances.reduce((lineItems, performance) => {
+            let thisAmount = PlayFactory.makePlay(plays[performance.playID].type).getAmount(performance.audience);
+            return lineItems + ` ${plays[performance.playID].name}: ${format(thisAmount / 100)} (${performance.audience} seats)\n`;
+        }, '');
     }
 
     let result = `Statement for ${invoice.customer}\n`;
