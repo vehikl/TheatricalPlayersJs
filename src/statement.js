@@ -51,10 +51,6 @@ function statement (invoice, plays) {
         { style: "currency", currency: "USD",
             minimumFractionDigits: 2 }).format;
 
-    function getVolumeCredits(play, perf) {
-        return PlayFactory.makePlay(play.type).getVolumeCredits(perf);
-    }
-
     function getLineItem(play, thisAmount, perf) {
         return ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
     }
@@ -66,7 +62,8 @@ function statement (invoice, plays) {
     function getTotalVolumeCredits() {
         let volumeCredits = 0;
         for (let perf of invoice.performances) {
-            volumeCredits += getVolumeCredits(plays[perf.playID], perf);
+            const play = plays[perf.playID];
+            volumeCredits += PlayFactory.makePlay(play.type).getVolumeCredits(perf);
         }
         return volumeCredits;
     }
