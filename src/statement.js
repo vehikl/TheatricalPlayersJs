@@ -15,8 +15,8 @@ function statement (invoice, plays) {
         return result;
     }
 
-    function printLineItem(play, thisAmount, perf) {
-        result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+    function getLineItem(play, thisAmount, perf) {
+        return ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
     }
 
     for (let perf of invoice.performances) {
@@ -40,7 +40,7 @@ function statement (invoice, plays) {
                 throw new Error(`unknown type: ${play.type}`);
         }
         volumeCredits += getVolumeCredits(play, perf);
-        printLineItem(play, thisAmount, perf);
+        result += getLineItem(play, thisAmount, perf);
         totalAmount += thisAmount;
     }
     result += `Amount owed is ${format(totalAmount/100)}\n`;
