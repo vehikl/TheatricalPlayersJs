@@ -8,8 +8,11 @@ function statement (invoice, plays) {
             minimumFractionDigits: 2 }).format;
 
     function addVolumeCredits(play, perf) {
-        volumeCredits += Math.max(perf.audience - 30, 0);
-        if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
+        let result = 0;
+        result += Math.max(perf.audience - 30, 0);
+        if ("comedy" === play.type) result += Math.floor(perf.audience / 5);
+
+        return result;
     }
 
     function printLineItem(play, thisAmount, perf) {
@@ -36,7 +39,7 @@ function statement (invoice, plays) {
             default:
                 throw new Error(`unknown type: ${play.type}`);
         }
-        addVolumeCredits(play, perf);
+        volumeCredits += addVolumeCredits(play, perf);
         printLineItem(play, thisAmount, perf);
         totalAmount += thisAmount;
     }
