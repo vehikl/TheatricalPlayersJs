@@ -86,11 +86,15 @@ function statement (invoice, plays) {
         }, '');
     }
 
-    let result = `Statement for ${invoice.customer}\n`;
-    result += getLineItems();
-    result += `Amount owed is ${format(getTotalAmount()/100)}\n`;
-    result += `You earned ${(getTotalVolumeCredits())} credits\n`;
-    return result;
+    function generateTextReceipt() {
+        let result = `Statement for ${invoice.customer}\n`;
+        result += getLineItems();
+        result += `Amount owed is ${format(getTotalAmount() / 100)}\n`;
+        result += `You earned ${(getTotalVolumeCredits())} credits\n`;
+        return result;
+    }
+
+    return generateTextReceipt();
 }
 
 module.exports = statement;
