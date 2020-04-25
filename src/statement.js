@@ -37,8 +37,15 @@ function statement (invoice, plays) {
         }
     }
 
+    function getTotalVolumeCredits() {
+        let volumeCredits = 0;
+        for (let perf of invoice.performances) {
+            volumeCredits += getVolumeCredits(plays[perf.playID], perf);
+        }
+        return volumeCredits;
+    }
+
     let totalAmount = 0;
-    let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`;
     for (let perf of invoice.performances) {
         const play = plays[perf.playID];
@@ -46,11 +53,9 @@ function statement (invoice, plays) {
         result += getLineItem(play, thisAmount, perf);
         totalAmount += thisAmount;
     }
-    for (let perf of invoice.performances) {
-        volumeCredits += getVolumeCredits(plays[perf.playID], perf);
-    }
+
     result += `Amount owed is ${format(totalAmount/100)}\n`;
-    result += `You earned ${volumeCredits} credits\n`;
+    result += `You earned ${(getTotalVolumeCredits())} credits\n`;
     return result;
 }
 
