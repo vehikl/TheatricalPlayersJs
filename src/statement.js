@@ -18,22 +18,22 @@ class Play {
 }
 
 class TragedyPlay extends Play {
-    getAmount(perf) {
+    getAmount(audience) {
         let thisAmountA = 40000;
-        if (perf.audience > 30) {
-            thisAmountA += 1000 * (perf.audience - 30);
+        if (audience > 30) {
+            thisAmountA += 1000 * (audience - 30);
         }
         return thisAmountA;
     }
 }
 
 class ComedyPlay extends Play {
-    getAmount(perf) {
+    getAmount(audience) {
         let thisAmount = 30000;
-        if (perf.audience > 20) {
-            thisAmount += 10000 + 500 * (perf.audience - 20);
+        if (audience > 20) {
+            thisAmount += 10000 + 500 * (audience - 20);
         }
-        thisAmount += 300 * perf.audience;
+        thisAmount += 300 * audience;
         return thisAmount;
     }
 }
@@ -57,7 +57,7 @@ function statement (invoice, plays) {
 
     function getAmountForPlay(play, perf) {
         let playInstance = PlayFactory.makePlay(play.type);
-        return playInstance.getAmount(perf);
+        return playInstance.getAmount(perf.audience);
     }
 
     function getTotalVolumeCredits() {
