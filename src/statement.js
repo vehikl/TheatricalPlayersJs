@@ -1,18 +1,35 @@
-function getTragedyAmount(perf) {
-    let thisAmountA = 40000;
-    if (perf.audience > 30) {
-        thisAmountA += 1000 * (perf.audience - 30);
+class Play {
+    constructor (type) {
+        this.type = type;
     }
-    return thisAmountA;
-}
 
-function getComedyAmount(perf) {
-    let thisAmount = 30000;
-    if (perf.audience > 20) {
-        thisAmount += 10000 + 500 * (perf.audience - 20);
+    getAmount(perf) {
+        switch (this.type) {
+            case "tragedy":
+                return this.getTragedyAmount(perf);
+            case "comedy":
+                return this.getComedyAmount(perf);
+            default:
+                throw new Error(`unknown type: ${this.type}`);
+        }
     }
-    thisAmount += 300 * perf.audience;
-    return thisAmount;
+
+    getTragedyAmount(perf) {
+        let thisAmountA = 40000;
+        if (perf.audience > 30) {
+            thisAmountA += 1000 * (perf.audience - 30);
+        }
+        return thisAmountA;
+    }
+
+    getComedyAmount(perf) {
+        let thisAmount = 30000;
+        if (perf.audience > 20) {
+            thisAmount += 10000 + 500 * (perf.audience - 20);
+        }
+        thisAmount += 300 * perf.audience;
+        return thisAmount;
+    }
 }
 
 function statement (invoice, plays) {
@@ -33,14 +50,8 @@ function statement (invoice, plays) {
     }
 
     function getAmountForPlay(play, perf) {
-        switch (play.type) {
-            case "tragedy":
-                return getTragedyAmount(perf);
-            case "comedy":
-                return getComedyAmount(perf);
-            default:
-                throw new Error(`unknown type: ${play.type}`);
-        }
+        let playInstance = new Play(play.type);
+        return playInstance.getAmount(perf);
     }
 
     function getTotalVolumeCredits() {
