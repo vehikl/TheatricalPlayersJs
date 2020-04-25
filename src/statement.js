@@ -62,20 +62,20 @@ function statement (invoice, plays) {
     const items = invoice.performances.map(performance => InvoiceItemFactory.makeItem(plays[performance.playID], performance));
 
     function getTotalVolumeCredits() {
-        return items.reduce((totalCredits, performance) => {
-            return totalCredits + performance.getVolumeCredits();
+        return items.reduce((result, item) => {
+            return result + item.getVolumeCredits();
         }, 0);
     }
 
     function getTotalAmount() {
-        return items.reduce((total, performance) => {
-            return total + performance.getAmount();
+        return items.reduce((result, item) => {
+            return result + item.getAmount();
         }, 0);
     }
 
     function getLineItems() {
-        return items.reduce((lineItems, performance) => {
-            return lineItems + performance.getLineItem();
+        return items.reduce((result, item) => {
+            return result + item.getLineItem();
         }, '');
     }
 
