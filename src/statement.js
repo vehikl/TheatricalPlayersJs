@@ -1,19 +1,19 @@
+class PlayFactory {
+    static makePlay (type) {
+        switch (type) {
+            case "tragedy":
+                return new TragedyPlay(type);
+            case "comedy":
+                return new ComedyPlay(type);
+            default:
+                throw new Error(`unknown type: ${type}`);
+        }
+    }
+}
+
 class Play {
     constructor (type) {
         this.type = type;
-    }
-
-    getAmount(perf) {
-        switch (this.type) {
-            case "tragedy":
-                let tragedyPlay = new TragedyPlay(this.type);
-                return tragedyPlay.getAmount(perf);
-            case "comedy":
-                let comedyPlay = new ComedyPlay(this.type);
-                return comedyPlay.getAmount(perf);
-            default:
-                throw new Error(`unknown type: ${this.type}`);
-        }
     }
 }
 
@@ -56,7 +56,7 @@ function statement (invoice, plays) {
     }
 
     function getAmountForPlay(play, perf) {
-        let playInstance = new Play(play.type);
+        let playInstance = PlayFactory.makePlay(play.type);
         return playInstance.getAmount(perf);
     }
 
