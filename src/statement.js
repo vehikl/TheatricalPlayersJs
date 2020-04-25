@@ -2,8 +2,8 @@ const format = new Intl.NumberFormat("en-US",
   { style: "currency", currency: "USD",
       minimumFractionDigits: 2 }).format;
 
-class InvoiceFactory {
-    static makePlay (play, performance = null) {
+class InvoiceItemFactory {
+    static makeItem (play, performance = null) {
         switch (play.type) {
             case "tragedy":
                 return new TragedyPlay(play, performance);
@@ -59,22 +59,22 @@ class ComedyPlay extends Play {
 }
 
 function statement (invoice, plays) {
-    const performances = invoice.performances.map(performance => InvoiceFactory.makePlay(plays[performance.playID], performance));
+    const items = invoice.performances.map(performance => InvoiceItemFactory.makeItem(plays[performance.playID], performance));
 
     function getTotalVolumeCredits() {
-        return performances.reduce((totalCredits, performance) => {
+        return items.reduce((totalCredits, performance) => {
             return totalCredits + performance.getVolumeCredits();
         }, 0);
     }
 
     function getTotalAmount() {
-        return performances.reduce((total, performance) => {
+        return items.reduce((total, performance) => {
             return total + performance.getAmount();
         }, 0);
     }
 
     function getLineItems() {
-        return performances.reduce((lineItems, performance) => {
+        return items.reduce((lineItems, performance) => {
             return lineItems + performance.getLineItem();
         }, '');
     }
