@@ -32,6 +32,9 @@ class Item {
     getLineItemText () {
         return ` ${this.play.name}: ${format(this.getAmount() / 100)} (${this.performance.audience} seats)\n`
     }
+    getLineItemHtml () {
+        return ` <tr><td>${this.play.name}</td><td>${format(this.getAmount() / 100)}</td><td>${this.performance.audience} seats</td></tr>\n`
+    }
 }
 
 class TragedyItem extends Item {
@@ -65,7 +68,7 @@ class ComedyItem extends Item {
     }
 }
 
-function statement (invoice, plays) {
+function statement (invoice, plays, type = 'text') {
     const items = invoice.performances.map(performance => ItemFactory.with(plays).makeItem(performance));
 
     function getTotalVolumeCredits() {
@@ -86,6 +89,12 @@ function statement (invoice, plays) {
         }, '');
     }
 
+    function getHtmlLineItems() {
+        return items.reduce((result, item) => {
+            return result + item.getLineItemHtml();
+        }, '');
+    }
+
     function generateTextReceipt() {
         let result = `Statement for ${invoice.customer}\n`;
         result += getLineItems();
@@ -94,7 +103,22 @@ function statement (invoice, plays) {
         return result;
     }
 
-    return generateTextReceipt();
+    function generateHtmlReceipt() {
+        let result = `<h1>Statement for ${invoice.customer}</h1>\n`;
+        result += ' <table>\n';
+        result += ' <th><td>Play</td><td>Cost</td><td>Seats</td></th>\n';
+        result += getHtmlLineItems();
+        result += ' </table>\n'
+        result += `<p>Amount owed is ${format(getTotalAmount() / 100)}</p>\n`;
+        result += `<p>You earned ${(getTotalVolumeCredits())} credits</p>\n`;
+        return result;
+    }
+
+    if (type === 'text') {
+        return generateTextReceipt();
+    } else if (type === 'html') {
+        return generateHtmlReceipt();
+    }
 }
 
 module.exports = statement;

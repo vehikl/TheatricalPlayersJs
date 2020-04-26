@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`example html statement 1`] = `
+"<h1>Statement for BigCo</h1>
+ <table>
+ <th><td>Play</td><td>Cost</td><td>Seats</td></th>
+ <tr><td>Hamlet</td><td>$650.00</td><td>55 seats</td></tr>
+ <tr><td>As You Like It</td><td>$580.00</td><td>35 seats</td></tr>
+ <tr><td>Othello</td><td>$500.00</td><td>40 seats</td></tr>
+ </table>
+<p>Amount owed is $1,730.00</p>
+<p>You earned 47 credits</p>
+"
+`;
+
 exports[`example statement 1`] = `
 "Statement for BigCo
  Hamlet: $650.00 (55 seats)
