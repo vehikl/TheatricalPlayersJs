@@ -22,3 +22,24 @@ Amount owed is $1,730.00
 You earned 47 credits
 "
 `;
+
+exports[`html statement with new play types 1`] = `
+"<h1>Statement for BigCoII</h1>
+ <table>
+ <th><td>Play</td><td>Cost</td><td>Seats</td></th>
+ <tr><td>Henry V</td><td>$960.00</td><td>53 seats</td></tr>
+ <tr><td>As You Like It</td><td>$245.00</td><td>55 seats</td></tr>
+ </table>
+<p>Amount owed is $1,205.00</p>
+<p>You earned 118 credits</p>
+"
+`;
+
+exports[`statement with new play types 1`] = `
+"Statement for BigCoII
+ Henry V: $960.00 (53 seats)
+ As You Like It: $245.00 (55 seats)
+Amount owed is $1,205.00
+You earned 118 credits
+"
+`;

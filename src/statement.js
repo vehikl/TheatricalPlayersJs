@@ -16,6 +16,10 @@ class ItemFactory {
                 return new TragedyItem(play, performance);
             case "comedy":
                 return new ComedyItem(play, performance);
+            case "history":
+                return new HistoryItem(play, performance);
+            case "pastoral":
+                return new PastoralItem(play, performance);
             default:
                 throw new Error(`unknown type: ${play.type}`);
         }
@@ -34,6 +38,36 @@ class Item {
     }
     getLineItemHtml () {
         return ` <tr><td>${this.play.name}</td><td>${format(this.getAmount() / 100)}</td><td>${this.performance.audience} seats</td></tr>\n`
+    }
+}
+
+class HistoryItem extends Item {
+    getAmount() {
+        const audience = this.performance.audience;
+        let thisAmountA = 50000;
+        if (audience > 30) {
+            thisAmountA += 2000 * (audience - 30);
+        }
+        return thisAmountA;
+    }
+
+    getVolumeCredits() {
+        return Math.max(this.performance.audience - 30, 0) + 5;
+    }
+}
+
+class PastoralItem extends Item {
+    getAmount() {
+        const audience = this.performance.audience;
+        let thisAmountA = 2000;
+        if (audience > 30) {
+            thisAmountA += 500 * (audience - 10);
+        }
+        return thisAmountA;
+    }
+
+    getVolumeCredits() {
+        return Math.max(this.performance.audience - 15, 0) + 50;
     }
 }
 
