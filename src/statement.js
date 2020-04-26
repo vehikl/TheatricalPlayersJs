@@ -2,13 +2,11 @@ const format = new Intl.NumberFormat("en-US",
   { style: "currency", currency: "USD",
       minimumFractionDigits: 2 }).format;
 
-class ItemFactory {
+class PrivateItemFactory {
     constructor (plays) {
         this.plays = plays;
     }
-    static with(plays) {
-        return (new ItemFactory(plays));
-    }
+
     makeItem (performance = null) {
         const play = this.plays[performance.playID];
         switch (play.type) {
@@ -23,6 +21,15 @@ class ItemFactory {
             default:
                 throw new Error(`unknown type: ${play.type}`);
         }
+    }
+}
+
+class ItemFactory {
+    constructor () {
+        throw new Error('not allowed');
+    }
+    static with(plays) {
+        return (new PrivateItemFactory(plays));
     }
 }
 
