@@ -28,7 +28,7 @@ class ItemFactory {
     constructor () {
         throw new Error('not allowed');
     }
-    static with(plays) {
+    static getInstance(plays) {
         return (new PrivateItemFactory(plays));
     }
 }
@@ -110,7 +110,7 @@ class ComedyItem extends Item {
 }
 
 function statement (invoice, plays, type = 'text') {
-    const items = invoice.performances.map(performance => ItemFactory.with(plays).makeItem(performance));
+    const items = invoice.performances.map(performance => ItemFactory.getInstance(plays).makeItem(performance));
 
     function getTotalVolumeCredits() {
         return items.reduce((result, item) => {
