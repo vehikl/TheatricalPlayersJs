@@ -1,5 +1,5 @@
-const format = new Intl.NumberFormat("en-US",
-  { style: "currency", currency: "USD",
+const format = new Intl.NumberFormat('en-US',
+  { style: 'currency', currency: 'USD',
       minimumFractionDigits: 2 }).format;
 
 function getFactory (plays) {
@@ -12,13 +12,13 @@ function getFactory (plays) {
         makeItem (performance = null) {
             const play = this.plays[performance.playID];
             switch (play.type) {
-                case "tragedy":
+                case 'tragedy':
                     return new TragedyItem(play, performance);
-                case "comedy":
+                case 'comedy':
                     return new ComedyItem(play, performance);
-                case "history":
+                case 'history':
                     return new HistoryItem(play, performance);
-                case "pastoral":
+                case 'pastoral':
                     return new PastoralItem(play, performance);
                 default:
                     throw new Error(`unknown type: ${play.type}`);
@@ -31,6 +31,53 @@ function getFactory (plays) {
     }
 
     return instance;
+}
+
+class InvoiceCollection {
+  constructor(customer, items) {
+    this.items = items;
+    this.customer = customer;
+  }
+
+  _sum(fnName, init = 0) {
+    return this.items.reduce((result, item) => {
+      return result + item[fnName]();
+    }, init);
+  }
+
+  volumeCredits() {
+    return this._sum('getVolumeCredits');
+  }
+
+  totalAmount() {
+    return this._sum('getAmount');
+  }
+
+  lineItems() {
+    return this._sum('getLineItemText', '');
+  }
+  htmlLineItems() {
+    return this._sum('getLineItemHtml', '');
+  }
+
+  toText() {
+    let result = `Statement for ${this.customer}\n`;
+    result += this.lineItems();
+    result += `Amount owed is ${format(this.totalAmount() / 100)}\n`;
+    result += `You earned ${(this.volumeCredits())} credits\n`;
+    return result;
+  }
+
+  toHtml() {
+    let result = `<h1>Statement for ${this.customer}</h1>\n`;
+    result += ' <table>\n';
+    result += ' <th><td>Play</td><td>Cost</td><td>Seats</td></th>\n';
+    result += this.htmlLineItems();
+    result += ' </table>\n';
+    result += `<p>Amount owed is ${format(this.totalAmount() / 100)}</p>\n`;
+    result += `<p>You earned ${(this.volumeCredits())} credits</p>\n`;
+    return result;
+  }
 }
 
 class Item {
@@ -110,56 +157,9 @@ class ComedyItem extends Item {
 }
 
 function statement (invoice, plays, type = 'text') {
-    const items = invoice.performances.map(performance => getFactory(plays).makeItem(performance));
-
-    function getTotalVolumeCredits() {
-        return items.reduce((result, item) => {
-            return result + item.getVolumeCredits();
-        }, 0);
-    }
-
-    function getTotalAmount() {
-        return items.reduce((result, item) => {
-            return result + item.getAmount();
-        }, 0);
-    }
-
-    function getLineItems() {
-        return items.reduce((result, item) => {
-            return result + item.getLineItemText();
-        }, '');
-    }
-
-    function getHtmlLineItems() {
-        return items.reduce((result, item) => {
-            return result + item.getLineItemHtml();
-        }, '');
-    }
-
-    function generateTextReceipt() {
-        let result = `Statement for ${invoice.customer}\n`;
-        result += getLineItems();
-        result += `Amount owed is ${format(getTotalAmount() / 100)}\n`;
-        result += `You earned ${(getTotalVolumeCredits())} credits\n`;
-        return result;
-    }
-
-    function generateHtmlReceipt() {
-        let result = `<h1>Statement for ${invoice.customer}</h1>\n`;
-        result += ' <table>\n';
-        result += ' <th><td>Play</td><td>Cost</td><td>Seats</td></th>\n';
-        result += getHtmlLineItems();
-        result += ' </table>\n'
-        result += `<p>Amount owed is ${format(getTotalAmount() / 100)}</p>\n`;
-        result += `<p>You earned ${(getTotalVolumeCredits())} credits</p>\n`;
-        return result;
-    }
-
-    if (type === 'text') {
-        return generateTextReceipt();
-    } else if (type === 'html') {
-        return generateHtmlReceipt();
-    }
+  const invoices = invoice.performances.map(performance => getFactory(plays).makeItem(performance));
+  const performances = new InvoiceCollection(invoice.customer, invoices);
+  return type === 'text' ? performances.toText() : performances.toHtml();
 }
 
 module.exports = statement;
