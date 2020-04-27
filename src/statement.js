@@ -2,14 +2,11 @@ const format = new Intl.NumberFormat("en-US",
   { style: "currency", currency: "USD",
       minimumFractionDigits: 2 }).format;
 
-function getFactory () {
+function getFactory (plays) {
     let instance;
     class ItemFactory {
-        constructor () {}
-
-        setPlays(plays) {
+        constructor (plays) {
             this.plays = plays;
-            return this;
         }
 
         makeItem (performance = null) {
@@ -30,7 +27,7 @@ function getFactory () {
     }
 
     if (!instance) {
-        instance = new ItemFactory();
+        instance = new ItemFactory(plays);
     }
 
     return instance;
@@ -113,7 +110,7 @@ class ComedyItem extends Item {
 }
 
 function statement (invoice, plays, type = 'text') {
-    const items = invoice.performances.map(performance => getFactory().setPlays(plays).makeItem(performance));
+    const items = invoice.performances.map(performance => getFactory(plays).makeItem(performance));
 
     function getTotalVolumeCredits() {
         return items.reduce((result, item) => {
