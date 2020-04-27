@@ -2,38 +2,38 @@ const format = new Intl.NumberFormat("en-US",
   { style: "currency", currency: "USD",
       minimumFractionDigits: 2 }).format;
 
-class PrivateItemFactory {
-    constructor () {}
+function getFactory () {
+    let instance;
+    class ItemFactory {
+        constructor () {}
 
-    setPlays(plays) {
-        this.plays = plays;
-        return this;
-    }
+        setPlays(plays) {
+            this.plays = plays;
+            return this;
+        }
 
-    makeItem (performance = null) {
-        const play = this.plays[performance.playID];
-        switch (play.type) {
-            case "tragedy":
-                return new TragedyItem(play, performance);
-            case "comedy":
-                return new ComedyItem(play, performance);
-            case "history":
-                return new HistoryItem(play, performance);
-            case "pastoral":
-                return new PastoralItem(play, performance);
-            default:
-                throw new Error(`unknown type: ${play.type}`);
+        makeItem (performance = null) {
+            const play = this.plays[performance.playID];
+            switch (play.type) {
+                case "tragedy":
+                    return new TragedyItem(play, performance);
+                case "comedy":
+                    return new ComedyItem(play, performance);
+                case "history":
+                    return new HistoryItem(play, performance);
+                case "pastoral":
+                    return new PastoralItem(play, performance);
+                default:
+                    throw new Error(`unknown type: ${play.type}`);
+            }
         }
     }
-}
 
-class ItemFactory {
-    constructor () {
-        throw new Error('not allowed');
+    if (!instance) {
+        instance = new ItemFactory();
     }
-    static getInstance() {
-        return (new PrivateItemFactory());
-    }
+
+    return instance;
 }
 
 class Item {
@@ -113,7 +113,7 @@ class ComedyItem extends Item {
 }
 
 function statement (invoice, plays, type = 'text') {
-    const items = invoice.performances.map(performance => ItemFactory.getInstance().setPlays(plays).makeItem(performance));
+    const items = invoice.performances.map(performance => getFactory().setPlays(plays).makeItem(performance));
 
     function getTotalVolumeCredits() {
         return items.reduce((result, item) => {
