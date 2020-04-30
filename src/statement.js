@@ -104,7 +104,7 @@ function htmlStatement(invoice, plays) {
   }
 
   function printLineForOrder(play, thisAmount, performance) {
-    return ` ${play.name}: ${format(thisAmount / 100)} (${performance.audience} seats)\n`;
+    return ` <b>${play.name}:</b> ${format(thisAmount / 100)} (${performance.audience} seats)<br>\n`;
   }
 
   function getAmount(play, performance) {
@@ -159,15 +159,15 @@ function htmlStatement(invoice, plays) {
     return result;
   }
 
-  function getTextReceipt() {
-    let result = `Statement for ${invoice.customer}\n`;
+  function getHtmlReceipt() {
+    let result = `<div>\n<h1>Statement for ${invoice.customer}</h1>\n`;
     result += getLineItems();
-    result += `Amount owed is ${format(getTotalAmount() / 100)}\n`;
-    result += `You earned ${(getVolumeCredits())} credits\n`;
+    result += `Amount owed is ${format(getTotalAmount() / 100)}<br>\n`;
+    result += `You earned ${(getVolumeCredits())} credits\n</div>`;
     return result;
   }
 
-  return getTextReceipt();
+  return getHtmlReceipt();
 }
 
 

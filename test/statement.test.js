@@ -8,7 +8,7 @@ test('example statement', () => {
     expect(statement(invoice, plays)).toMatchSnapshot();
 });
 
-xtest('generates html statement', () => {
+test('generates html statement', () => {
     const invoice = JSON.parse(fs.readFileSync('test/invoice.json', 'utf8'));
     const plays = JSON.parse(fs.readFileSync('test/plays.json', 'utf8'));
     expect(htmlStatement(invoice, plays)).toMatchSnapshot();

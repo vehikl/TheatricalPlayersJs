@@ -12,7 +12,7 @@ You earned 47 credits
 
 exports[`generates html statement 1`] = `
 "<div>
- <h1>Statement for BigCo</h1>
+<h1>Statement for BigCo</h1>
  <b>Hamlet:</b> $650.00 (55 seats)<br>
  <b>As You Like It:</b> $580.00 (35 seats)<br>
  <b>Othello:</b> $500.00 (40 seats)<br>
