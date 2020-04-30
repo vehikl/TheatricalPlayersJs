@@ -43,8 +43,6 @@ function statement(invoice, plays) {
     return thisAmount
   }
 
-  let result = `Statement for ${invoice.customer}\n`;
-
   function getTotalAmount() {
     let result = 0;
     for (let performance of invoice.performances) {
@@ -54,8 +52,6 @@ function statement(invoice, plays) {
     }
     return result;
   }
-
-  const totalAmount = getTotalAmount();
 
   function getVolumeCredits() {
     let credits = 0;
@@ -67,16 +63,18 @@ function statement(invoice, plays) {
     return credits;
   }
 
-  const volumeCredits = getVolumeCredits();
-
-  for (let performance of invoice.performances) {
-    const play = plays[performance.playID];
-    const thisAmount = getAmount(play, performance);
-    printLineForOrder(play, thisAmount, performance);
+  function getLineItems() {
+    for (let performance of invoice.performances) {
+      const play = plays[performance.playID];
+      const thisAmount = getAmount(play, performance);
+      printLineForOrder(play, thisAmount, performance);
+    }
   }
 
-  result += `Amount owed is ${format(totalAmount / 100)}\n`;
-  result += `You earned ${volumeCredits} credits\n`;
+  let result = `Statement for ${invoice.customer}\n`;
+  getLineItems();
+  result += `Amount owed is ${format(getTotalAmount() / 100)}\n`;
+  result += `You earned ${(getVolumeCredits())} credits\n`;
   return result;
 }
 
