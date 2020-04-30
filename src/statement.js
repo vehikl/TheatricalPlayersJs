@@ -12,6 +12,10 @@ function statement(invoice, plays) {
     volumeCredits += Math.max(performance.audience - 30, 0);
   }
 
+  function addExtraCreditForComedy(play, performance) {
+    if ("comedy" === play.type) volumeCredits += Math.floor(performance.audience / 5);
+  }
+
   for (let performance of invoice.performances) {
     const play = plays[performance.playID];
     let thisAmount = 0;
@@ -32,11 +36,9 @@ function statement(invoice, plays) {
       default:
         throw new Error(`unknown type: ${play.type}`);
     }
-    // add volume credits
     addVolumeCredits(performance);
 
-    // add extra credit for every ten comedy attendees
-    if ("comedy" === play.type) volumeCredits += Math.floor(performance.audience / 5);
+    addExtraCreditForComedy(play, performance);
     // print line for this order
     result += ` ${play.name}: ${format(thisAmount / 100)} (${performance.audience} seats)\n`;
     totalAmount += thisAmount;
