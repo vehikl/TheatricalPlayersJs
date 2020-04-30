@@ -47,14 +47,20 @@ function statement(invoice, plays) {
   for (let performance of invoice.performances) {
     const play = plays[performance.playID];
     const thisAmount = getAmount(play, performance);
+    totalAmount += thisAmount;
+  }
+
+  for (let performance of invoice.performances) {
+    const play = plays[performance.playID];
+    const thisAmount = getAmount(play, performance);
 
     addVolumeCredits(performance);
 
     addExtraCreditForComedy(play, performance);
 
     printLineForOrder(play, thisAmount, performance);
-    totalAmount += thisAmount;
   }
+
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
   return result;
