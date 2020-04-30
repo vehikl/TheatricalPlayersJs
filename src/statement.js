@@ -6,8 +6,11 @@ function statement(invoice, plays) {
       minimumFractionDigits: 2
     }).format;
 
-  function addVolumeCredits(performance) {
-    return Math.max(performance.audience - 30, 0);
+  function addVolumeCredits(performance, play) {
+    let credits =  Math.max(performance.audience - 30, 0);
+    credits += addExtraCreditForComedy(play, performance);
+
+    return credits;
   }
 
   function addExtraCreditForComedy(play, performance) {
@@ -59,9 +62,7 @@ function statement(invoice, plays) {
     const play = plays[performance.playID];
     const thisAmount = getAmount(play, performance);
 
-    volumeCredits += addVolumeCredits(performance);
-
-    volumeCredits += addExtraCreditForComedy(play, performance);
+    volumeCredits += addVolumeCredits(performance, play);
 
     printLineForOrder(play, thisAmount, performance);
   }
