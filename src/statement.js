@@ -20,9 +20,8 @@ function statement(invoice, plays) {
     result += ` ${play.name}: ${format(thisAmount / 100)} (${performance.audience} seats)\n`;
   }
 
-  for (let performance of invoice.performances) {
-    const play = plays[performance.playID];
-    let thisAmount = 0;
+  function getAmount(play, performance) {
+    let thisAmount = 0
     switch (play.type) {
       case "tragedy":
         thisAmount = 40000;
@@ -40,6 +39,13 @@ function statement(invoice, plays) {
       default:
         throw new Error(`unknown type: ${play.type}`);
     }
+    return thisAmount
+  }
+
+  for (let performance of invoice.performances) {
+    const play = plays[performance.playID];
+    const thisAmount = getAmount(play, performance);
+
     addVolumeCredits(performance);
 
     addExtraCreditForComedy(play, performance);
