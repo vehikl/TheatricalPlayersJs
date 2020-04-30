@@ -11,7 +11,7 @@ function statement(invoice, plays) {
   }
 
   function addExtraCreditForComedy(play, performance) {
-    if ("comedy" === play.type) volumeCredits += Math.floor(performance.audience / 5);
+    return ("comedy" === play.type) ? Math.floor(performance.audience / 5) : 0;
   }
 
   function printLineForOrder(play, thisAmount, performance) {
@@ -61,7 +61,7 @@ function statement(invoice, plays) {
 
     volumeCredits += addVolumeCredits(performance);
 
-    addExtraCreditForComedy(play, performance);
+    volumeCredits += addExtraCreditForComedy(play, performance);
 
     printLineForOrder(play, thisAmount, performance);
   }
