@@ -43,7 +43,6 @@ function statement(invoice, plays) {
     return thisAmount
   }
 
-  let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
 
   function getTotalAmount() {
@@ -58,10 +57,17 @@ function statement(invoice, plays) {
 
   const totalAmount = getTotalAmount();
 
-  for (let performance of invoice.performances) {
-    const play = plays[performance.playID];
-    volumeCredits += addVolumeCredits(performance, play);
+  function getVolumeCredits() {
+    let credits = 0;
+    for (let performance of invoice.performances) {
+      const play = plays[performance.playID];
+      credits += addVolumeCredits(performance, play);
+    }
+
+    return credits;
   }
+
+  const volumeCredits = getVolumeCredits();
 
   for (let performance of invoice.performances) {
     const play = plays[performance.playID];
