@@ -7,7 +7,7 @@ function statement(invoice, plays) {
     }).format;
 
   function addVolumeCredits(performance) {
-    volumeCredits += Math.max(performance.audience - 30, 0);
+    return Math.max(performance.audience - 30, 0);
   }
 
   function addExtraCreditForComedy(play, performance) {
@@ -59,7 +59,7 @@ function statement(invoice, plays) {
     const play = plays[performance.playID];
     const thisAmount = getAmount(play, performance);
 
-    addVolumeCredits(performance);
+    volumeCredits += addVolumeCredits(performance);
 
     addExtraCreditForComedy(play, performance);
 
