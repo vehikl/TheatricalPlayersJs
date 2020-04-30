@@ -40,15 +40,20 @@ function statement(invoice, plays) {
     return thisAmount
   }
 
-  let totalAmount = 0;
   let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
 
-  for (let performance of invoice.performances) {
-    const play = plays[performance.playID];
-    const thisAmount = getAmount(play, performance);
-    totalAmount += thisAmount;
+  function getTotalAmount() {
+    let result = 0;
+    for (let performance of invoice.performances) {
+      const play = plays[performance.playID];
+      const thisAmount = getAmount(play, performance);
+      result += thisAmount;
+    }
+    return result;
   }
+
+  const totalAmount = getTotalAmount();
 
   for (let performance of invoice.performances) {
     const play = plays[performance.playID];
