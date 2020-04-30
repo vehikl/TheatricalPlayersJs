@@ -60,10 +60,12 @@ function statement(invoice, plays) {
 
   for (let performance of invoice.performances) {
     const play = plays[performance.playID];
-    const thisAmount = getAmount(play, performance);
-
     volumeCredits += addVolumeCredits(performance, play);
+  }
 
+  for (let performance of invoice.performances) {
+    const play = plays[performance.playID];
+    const thisAmount = getAmount(play, performance);
     printLineForOrder(play, thisAmount, performance);
   }
 
