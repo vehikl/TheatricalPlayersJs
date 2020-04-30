@@ -18,7 +18,7 @@ function statement(invoice, plays) {
   }
 
   function printLineForOrder(play, thisAmount, performance) {
-    result += ` ${play.name}: ${format(thisAmount / 100)} (${performance.audience} seats)\n`;
+    return ` ${play.name}: ${format(thisAmount / 100)} (${performance.audience} seats)\n`;
   }
 
   function getAmount(play, performance) {
@@ -64,15 +64,17 @@ function statement(invoice, plays) {
   }
 
   function getLineItems() {
+    let result = '';
     for (let performance of invoice.performances) {
       const play = plays[performance.playID];
       const thisAmount = getAmount(play, performance);
-      printLineForOrder(play, thisAmount, performance);
+      result += printLineForOrder(play, thisAmount, performance);
     }
+    return result;
   }
 
   let result = `Statement for ${invoice.customer}\n`;
-  getLineItems();
+  result += getLineItems();
   result += `Amount owed is ${format(getTotalAmount() / 100)}\n`;
   result += `You earned ${(getVolumeCredits())} credits\n`;
   return result;
