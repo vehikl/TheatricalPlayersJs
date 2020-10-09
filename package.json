@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/emilybache/Theatrical-Players-Refactoring-Kata",
   "devDependencies": {
+    "@types/node": "^14.11.5",
     "babel": "^5.8.23",
     "jest": "^24.8.0"
   }
